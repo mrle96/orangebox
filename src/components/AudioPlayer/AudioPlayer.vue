@@ -78,7 +78,7 @@ watch(currentSongValue, () => {
 
 
 const togglePause = () => {
-
+  console.log(musicPlayListStore.name)
   if (isAudioPlaying.value) {
     audioTag.value.pause();
     isAudioPlaying.value = false;
@@ -96,7 +96,7 @@ const togglePause = () => {
 <template>
   <div class="p-5 flex flex-col items-center bg-orange-800/25 rounded-2xl border-orange-500 drop-shadow-md self-end w-full  gap-4">
 
-
+  
     <audio :controls="false" @canplay="getSongDuration" ref="audioTag" @timeupdate="updateCurrentSongValue" />
 
 
@@ -127,7 +127,8 @@ const togglePause = () => {
           <Pause v-if="isAudioPlaying" />
           <Play v-else />
         </button>
-        <button
+        <button 
+         
           class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500">
           <Forward />
         </button>

@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps } from 'vue';
+
 import { useMusicPlayList } from '@/stores/MusicPlayList';
 import Play from '../icons/Play.vue';
 const props = defineProps({
