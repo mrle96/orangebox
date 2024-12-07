@@ -119,6 +119,7 @@ const togglePause = () => {
 
       <div class="flex gap-1 ml-auto">
         <button
+        @click="musicPlayListStore.getPrevius"
           class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500">
           <Backward />
         </button>
@@ -128,7 +129,7 @@ const togglePause = () => {
           <Play v-else />
         </button>
         <button 
-         
+          @click="musicPlayListStore.getNext"
           class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500">
           <Forward />
         </button>

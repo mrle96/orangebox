@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed ,watch} from "vue";
 import { defineStore } from "pinia";
 
 export const useMusicPlayList = defineStore("musicPlayList", () => {
@@ -11,51 +11,40 @@ export const useMusicPlayList = defineStore("musicPlayList", () => {
   };
 
   const setCurrentPlaying = (newCurrentSongIndex) => {
-
     if (arrOfSongs.value.length > newCurrentSongIndex) {
-      currentPlayingIndex.value=newCurrentSongIndex;
-
-      currentPlaying.value = arrOfSongs.value.find((item, index) => {
-        if (index === currentPlayingIndex.value) {
-          return item;
-        }
-      });
+      currentPlayingIndex.value = newCurrentSongIndex;
+      currentPlaying.value = arrOfSongs.value[newCurrentSongIndex];
     }
+
     arrOfSongs.value = arrOfSongs.value.map((item, index) => {
-      if (index === currentPlayingIndex.value) {
-        item.isPlaying = true;
-      } else {
-        item.isPlaying = false;
-      }
+      item.isPlaying = index === currentPlayingIndex.value;
       return item;
     });
   };
 
-
-  const getNextSong=()=>{
-    currentPlayingIndex.value++;
-
-    currentPlaying.value = arrOfSongs.value.find((item, index) => {
-      if (index === currentPlayingIndex.value) {
-        return item;
-      }
-    });
-
-    arrOfSongs.value = arrOfSongs.value.map((item, index) => {
-      if (index === currentPlayingIndex.value) {
-        item.isPlaying = true;
-      } else {
-        item.isPlaying = false;
-      }
-      return item;
-    });
-
-  }
-
+  const getNext = () => {
+    if (currentPlayingIndex.value < arrOfSongs.value.length - 1) {
+      setCurrentPlaying(currentPlayingIndex.value + 1);
+    } else {
+      setCurrentPlaying(0); // Resetuje na početak ako je poslednja pesma
+    }
+  };
+  
+  const getPrevius = () => {
+    if (currentPlayingIndex.value > 0) {
+      setCurrentPlaying(currentPlayingIndex.value - 1);
+    } else {
+      setCurrentPlaying(arrOfSongs.value.length - 1); // Prebaci na poslednju pesmu ako je trenutni indeks 0
+    }
+  };
+  
   const getAllSongs = () => {
     return arrOfSongs.value;
   };
+
   return {
+    getPrevius,
+    getNext,
     currentPlayingIndex,
     getAllSongs,
     arrOfSongs,
