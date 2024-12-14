@@ -11,6 +11,7 @@ export const useMusicPlayList = defineStore("musicPlayList", () => {
   };
 
   const setCurrentPlaying = (newCurrentSongIndex) => {
+   
     if (arrOfSongs.value.length > newCurrentSongIndex) {
       currentPlayingIndex.value = newCurrentSongIndex;
       currentPlaying.value = arrOfSongs.value[newCurrentSongIndex];

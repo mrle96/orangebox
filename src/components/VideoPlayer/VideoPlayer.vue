@@ -1,96 +1,141 @@
 <script setup>
-import {
-  ref,
-  useTemplateRef,
-  watch,
-  onUnmounted,
-  onUpdated,
-  watchEffect,
-  onMounted,
-} from "vue";
+import { ref, watch } from "vue";
 import Play from "../icons/Play.vue";
 import Pause from "../icons/Pause.vue";
 import Forward from "../icons/Forward.vue";
 import Backward from "../icons/Backward.vue";
 import Unmute from "../icons/Unmute.vue";
 import Mute from "../icons/Mute.vue";
-import Logo from "../icons/Logo.vue";
+import { useMusicPlayList } from "@/stores/MusicPlayList";
 
-const videoRef=ref();
-const isAudioPlaying=ref(false)
-const currentDurationPercente=ref(0);
-const trackLengthDIV=ref();
-const videoTagVolume=ref(0)
-const isAudioMuted=ref(false)
-const playVideo=()=>{
-  isAudioPlaying.value=!isAudioPlaying.value
-  if(isAudioPlaying.value){
-    videoRef.value.play();
-  }else{
-    videoRef.value.pause();
+const musicPlayListStore = useMusicPlayList();
+const videoTag = ref();
+const trackLengthDIV = ref();
+const currentPrecente = ref(0);
+const currentVideoValue = ref();
+const videoDuration = ref();
+const videoTagVolume = ref(100);
+const isVideoPlaying = ref(false);
+const isVideoMuted = ref(false);
+
+// Praćenje promene trenutnog videa koji se pušta
+watch(
+  () => musicPlayListStore.currentPlaying,
+  (newVideo) => {
+    videoTag.value.src = newVideo.path;
+    videoTag.value.play();
+    isVideoPlaying.value = true;
   }
+);
+
+// Ažuriranje trenutnog vremena videa
+function updateCurrentVideoValue(e) {
+  currentVideoValue.value = e.target.currentTime;
 }
-const getCurrentDurationTime=()=>{
-  currentDurationPercente.value=Math.round((videoRef.value.currentTime/videoRef.value.duration)*100)
+
+// Dohvatanje trajanja videa
+function getVideoDuration(e) {
+  videoDuration.value = e.target.duration;
 }
 
-
-function userUpdateSongCurrentValue(e) {
-
-  const Bounding = trackLengthDIV.value.getBoundingClientRect();
-  const width = Bounding.width;
+// Ažuriranje trenutnog vremena videa kada korisnik klikne na progres bar
+function userUpdateVideoCurrentValue(e) {
+  const boundingRect = trackLengthDIV.value.getBoundingClientRect();
+  const width = boundingRect.width;
   const offsetX = e.offsetX;
-  const p = Math.round((offsetX / width) * 100);
-  const newCurrentSongTime = (p * videoRef.value.duration) / 100;
-  videoRef.value.currentTime = newCurrentSongTime;
+  const percent = Math.round((offsetX / width) * 100);
+  const newCurrentVideoTime = (percent * videoDuration.value) / 100;
+  videoTag.value.currentTime = newCurrentVideoTime;
 }
 
+// Promena jačine zvuka na osnovu klizne kontrole
+function changeVolume() {
+  videoTag.value.volume = videoTagVolume.value / 100;
+}
+
+// Prebacivanje između zvučnog isključivanja (mute) i uključenosti zvuka
+function toggleVideoVolume() {
+  isVideoMuted.value = !isVideoMuted.value;
+  videoTag.value.muted = isVideoMuted.value;
+}
+
+// Ažuriranje procenta trenutnog vremena videa
+watch(currentVideoValue, () => {
+  currentPrecente.value = Math.round(
+    (currentVideoValue.value / videoDuration.value) * 100
+  );
+});
+
+// Funkcija za pauziranje i pokretanje videa
+const togglePause = () => {
+  if (isVideoPlaying.value) {
+    videoTag.value.pause();
+    isVideoPlaying.value = false;
+  } else {
+    videoTag.value.play();
+    isVideoPlaying.value = true;
+  }
+};
 
 </script>
 
 <template>
-  <div class=" flex flex-col   gap-3 p-3  ">
- 
-    <video  ref="videoRef"  @timeupdate="getCurrentDurationTime" class=" max-w-5xl relative z-10  block m-auto object-cover">
-      <source src="" type="video/webm" />
-      <source src="../../assets/230060_small.mp4"  type="video/mp4" />
-      <p>
-        Your browser doesn't support HTML video. Here is a
-        <a href="" download="">link to the video</a> instead.
-      </p>
-    </video>
-    <div
-      class="p-5 flex flex-col items-center  bg-orange-800/25 rounded-2xl border-orange-500 drop-shadow-md self-end border-l-red-500 w-full gap-4">
-      <div class="w-full relative  ">
-        <div ref="trackLengthDIV" @click="userUpdateSongCurrentValue" class="w-full h-1 hover:cursor-pointer bg-orange-500 p-1 absolute rounded-lg "></div>
-        <div  :style="{ width: `${currentDurationPercente}%` }"
-        class="w-6/12 h-1 pointer-events-none bg-orange-700 rounded-lg p-1 absolute"></div>
+  <div class="p-5 flex flex-col items-center bg-orange-800/25 rounded-2xl border-orange-500 drop-shadow-md self-end w-full gap-4">
+  
+    <!-- Video element -->
+    <video :controls="false" @canplay="getVideoDuration" ref="videoTag" @timeupdate="updateCurrentVideoValue" src="../../assets/230060_small.mp4" />
+  
+    <!-- Progres bar -->
+    <div class="w-full relative">
+      <div 
+        @click="userUpdateVideoCurrentValue" 
+        ref="trackLengthDIV" 
+        class="w-full hover:cursor-pointer bg-orange-500 h-1 absolute rounded-lg">
       </div>
-      <div class="flex w-7/12 mr-auto">
-        <div class="flex items-center gap-3">
-          <button>
-            <Mute v-if="isAudioMuted" />
-            <Unmute v-else />
-          </button>
-          <input  v-model="videoTagVolume" type="range" class="accent-orange-800" />
-        </div>
-        <div class="flex gap-1 ml-auto">
-          <button
-            class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500">
-            <Backward />
-          </button>
-          <button
-            @click="playVideo"
-            class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500">
-            <Pause v-if="isAudioPlaying" />
-            <Play v-else />
-          </button>
-          <button
-            class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500">
-            <Forward />
-          </button>
-        </div>
+      <div 
+        :style="{ width: `${currentPrecente}%` }" 
+        class="pointer-events-none bg-orange-700 rounded-lg h-1 absolute">
+      </div>
+    </div>
+  
+    <!-- Dugmadi za kontrolu -->
+    <div class="flex w-7/12 mr-auto">
+      <div class="flex items-center gap-3">
+        <!-- Mute/Unmute dugme -->
+        <button @click="toggleVideoVolume">
+          <Mute v-if="isVideoMuted" />
+          <Unmute v-else />
+        </button>
+        <!-- Klizna kontrola za jačinu zvuka -->
+        <input @input="changeVolume" v-model="videoTagVolume" type="range" class="accent-orange-800" />
+      </div>
+
+      <!-- Dugmadi za navigaciju -->
+      <div class="flex gap-1 ml-auto">
+        <button
+          @click="musicPlayListStore.getPrevius"
+          class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500"
+        >
+          <Backward />
+        </button>
+        <button 
+          @click="togglePause"
+          class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500"
+        >
+          <Pause v-if="isVideoPlaying" />
+          <Play v-else />
+        </button>
+        <button
+          @click="musicPlayListStore.getNext"
+          class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500"
+        >
+          <Forward />
+        </button>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+
+</style>

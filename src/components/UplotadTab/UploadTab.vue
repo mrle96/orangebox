@@ -2,17 +2,16 @@
 import { useMusicPlayList } from '@/stores/MusicPlayList';
 import { ref, watch } from 'vue';
 import { uuid } from 'vue-uuid';
-
+import { useVideoPlayList } from '@/stores/VideoPlayList';
 const inputFile=ref(null)
 const musicPlayListStore=useMusicPlayList()
-
+const videoPlayList=useVideoPlayList()
 const getAudioFile = (e) => {
   
 
 
   const inputFiles = e.target.files; // Direktno uzmi `files` objekat
   
-
 
   for (let i = 0; i < inputFiles.length; i++) { // Ispravi uslov petlje
    const path=URL.createObjectURL(inputFiles[i]);
