@@ -1,3 +1,10 @@
+<script setup>
+import VideoPlayer from '@/components/VideoPlayer/VideoPlayer.vue';
+</script>
 <template>
-    <div>KOSOVO JE SRCE SRBIJE</div>
+    <div class="w-full h-full ">
+        
+        <VideoPlayer/>
+    </div>
+    
 </template>

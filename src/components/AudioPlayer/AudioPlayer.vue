@@ -21,21 +21,17 @@ import Logo from "../icons/Logo.vue";
 
 
 const indexSong=ref(0)
-
 const musicPlayListStore = useMusicPlayList()
-
-
-
 const trackLengthDIV = ref();
 const currentPrecente = ref(0);
 const currentSongValue = ref();
 const songDuration = ref();
 const audioTagVolume = ref(100);
-
 const audioTag = ref();
 const isAudioPlaying = ref(false);
 const isAudioMuted = ref(false);
 const src = ref('')
+
 watch(
   () => musicPlayListStore.currentPlaying,
   (newSong, oldSong) => {
@@ -105,7 +101,7 @@ const togglePause = () => {
       <div @click="userUpdateSongCurrentValue" ref="trackLengthDIV"
         class="w-full h-1 hover:cursor-pointer bg-orange-500 p-1 absolute rounded-lg "></div>
       <div :style="{ width: `${currentPrecente}%` }"
-        class="w-6/12 h-1 pointer-events-none bg-orange-700 rounded-lg p-1 absolute"></div>
+        class=" h-1 pointer-events-none bg-orange-700 rounded-lg p-1 absolute"></div>
     </div>
 
     <div class="flex w-7/12 mr-auto">
