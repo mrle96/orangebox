@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar/Navbar.vue";
 import SideBarLayout from "./components/SideBarLayout/SideBarLayout.vue";
 import AudioPlayer from "./components/AudioPlayer/AudioPlayer.vue";
 import Logo from "./components/icons/Logo.vue";
+import AudioPlayerPage from "./views/AudioPlayerPage.vue";
+import AboutPage from "./views/AboutPage.vue";
 
 </script>
 
@@ -14,12 +16,9 @@ import Logo from "./components/icons/Logo.vue";
     <Navbar />
     <AppLayout>
       <SideBarLayout />
-      <div class="w-full flex pb-10 px-10 flex-col justify-between">
-        <div class=" self-stretch flex-1 grid place-content-center  ">
-          <Logo/>
-        </div>
-        <AudioPlayer />
-      </div>
+      <RouterView>
+      </RouterView>
+      
     </AppLayout>
   </MainLayout>
 </template>
