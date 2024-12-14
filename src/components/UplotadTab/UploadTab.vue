@@ -16,7 +16,17 @@ const getAudioFile = (e) => {
   for (let i = 0; i < inputFiles.length; i++) { // Ispravi uslov petlje
    const path=URL.createObjectURL(inputFiles[i]);
    const name=inputFiles[i].name;
-   musicPlayListStore.addNewAudioFile({path,name,isPlaying:false})
+   const type=inputFiles[i].type;
+   if(type.startsWith('audio')){
+    musicPlayListStore.addNewAudioFile({path,name,isPlaying:false})
+   }
+   if(type.startsWith('video')){
+    
+    
+    videoPlayList.videoAddNewVideoFile({path,name,isPlaying:false})
+   }
+
+   
 };
 
 }
@@ -70,7 +80,7 @@ const getAudioFile = (e) => {
       v-show="false"
       id="inputSongFile"
       type="file"
-      accept="audio/*"
+      accept="audio/*,video/*"
     />
   </div>
 </template>

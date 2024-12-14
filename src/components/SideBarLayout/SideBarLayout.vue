@@ -7,10 +7,11 @@ import { useMusicPlayList } from "@/stores/MusicPlayList";
 import { useTypeOfPlayList } from "@/stores/TypeOfPlayList";
 import SongCard from "../SongCard/SongCard.vue";
 import { nextTick } from 'vue';
-
+import { useVideoPlayList } from "@/stores/VideoPlayList";
 
 const tabStore = useTypeOfPlayList();
 const musicPlayListStore = useMusicPlayList();
+const videoPlayListStore= useVideoPlayList()
 const router = useRouter();
 
 
@@ -35,6 +36,11 @@ const handleClickCardPlayBtn = (index) => {
         v-for="(song, index) in musicPlayListStore.arrOfSongs" :trackName="song.name"
         @playSong="handleClickCardPlayBtn(index)" />
     </div>
+    <div class="flex-grow overflow-y-scroll" v-if="tabStore.currenTab === 'videoTab'">
+    <SongCard :isPlaying="video.isPlaying" :url="video.url" :key="video.track"
+        v-for="(video, videoIndex) in videoPlayListStore.arrOfvideos" :trackName="video.name"
+        @playSong="handleClickCardPlayBtn(videoIndex)" />
+      </div>
     <UploadTab />
   </div>
 </template>

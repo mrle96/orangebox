@@ -1,12 +1,12 @@
 import { ref, computed ,watch} from "vue";
 import { defineStore } from "pinia";
 
-export const useVideoPlayList = defineStore("musicPlayList", () => {
+export const useVideoPlayList = defineStore("videoPlayList", () => {
   const currentPlaying = ref(0);
   const currentPlayingIndex = ref(0);
   const arrOfvideos = ref([]);
 
-  const videoaddNewVideoFile = (VideooObj) => {
+  const videoAddNewVideoFile = (VideooObj) => {
     arrOfvideos.value.push(VideooObj);
   };
 
@@ -49,7 +49,7 @@ export const useVideoPlayList = defineStore("musicPlayList", () => {
     currentPlayingIndex,
     getAllvideos,
     arrOfvideos,
-    videoaddNewVideoFile,
+    videoAddNewVideoFile,
     setCurrentPlaying,
     currentPlaying,
   };
