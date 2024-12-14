@@ -7,8 +7,8 @@ import Backward from "../icons/Backward.vue";
 import Unmute from "../icons/Unmute.vue";
 import Mute from "../icons/Mute.vue";
 import { useMusicPlayList } from "@/stores/MusicPlayList";
-
-const musicPlayListStore = useMusicPlayList();
+import { useVideoPlayList } from "@/stores/VideoPlayList";
+const videoPlayListStore = useVideoPlayList();
 const videoTag = ref();
 const trackLengthDIV = ref();
 const currentPrecente = ref(0);
@@ -20,7 +20,7 @@ const isVideoMuted = ref(false);
 
 // Praćenje promene trenutnog videa koji se pušta
 watch(
-  () => musicPlayListStore.currentPlaying,
+  () => videoPlayListStore.currentPlaying,
   (newVideo) => {
     videoTag.value.src = newVideo.path;
     videoTag.value.play();
@@ -83,7 +83,7 @@ const togglePause = () => {
   <div class="p-5 flex flex-col items-center bg-orange-800/25 rounded-2xl border-orange-500 drop-shadow-md self-end w-full gap-4">
   
     <!-- Video element -->
-    <video :controls="false" @canplay="getVideoDuration" ref="videoTag" @timeupdate="updateCurrentVideoValue" src="../../assets/230060_small.mp4" />
+    <video :controls="false" @canplay="getVideoDuration" ref="videoTag" @timeupdate="updateCurrentVideoValue"    />
   
     <!-- Progres bar -->
     <div class="w-full relative">

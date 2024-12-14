@@ -11,19 +11,26 @@ import { useVideoPlayList } from "@/stores/VideoPlayList";
 
 const tabStore = useTypeOfPlayList();
 const musicPlayListStore = useMusicPlayList();
-const videoPlayListStore= useVideoPlayList()
+const videoPlayListStore = useVideoPlayList()
 const router = useRouter();
 
 
-const handleClickCardPlayBtn = (index) => {
-  // Menjaj viewport na 'musicViewport'
-  tabStore.changeViewport('musicViewport');
+const handleClickCardPlayBtn = async (index, viewport) => {
 
-  // Nakon što Vue završi sa ažuriranjem DOM-a, pokreni pesmu
-  nextTick(() => {
-    musicPlayListStore.setCurrentPlaying(index);
-  });
+  if (tabStore.currentViewport != viewport) {
+    tabStore.changeViewport(viewport)
+  }
 
+  await nextTick(() => {
+    if (viewport == 'musicViewport') {
+      musicPlayListStore.setCurrentPlaying(index);
+      console.log("UPDATE m")
+    }
+    if(viewport == 'videoViewport'){
+      videoPlayListStore.setCurrentPlaying(index)
+      console.log("UPDATE V")
+    }
+  })
 }
 
 </script>
@@ -34,13 +41,13 @@ const handleClickCardPlayBtn = (index) => {
     <div class="flex-grow overflow-y-scroll" v-if="tabStore.currenTab === 'musicTab'">
       <SongCard :isPlaying="song.isPlaying" :url="song.url" :key="song.track"
         v-for="(song, index) in musicPlayListStore.arrOfSongs" :trackName="song.name"
-        @playSong="handleClickCardPlayBtn(index)" />
+        @playSong="handleClickCardPlayBtn(index, 'musicViewport')" />
     </div>
     <div class="flex-grow overflow-y-scroll" v-if="tabStore.currenTab === 'videoTab'">
-    <SongCard :isPlaying="video.isPlaying" :url="video.url" :key="video.track"
+      <SongCard :isPlaying="video.isPlaying" :url="video.url" :key="video.track"
         v-for="(video, videoIndex) in videoPlayListStore.arrOfvideos" :trackName="video.name"
-        @playSong="handleClickCardPlayBtn(videoIndex)" />
-      </div>
+        @playSong="handleClickCardPlayBtn(videoIndex, 'videoViewport')" />
+    </div>
     <UploadTab />
   </div>
 </template>
