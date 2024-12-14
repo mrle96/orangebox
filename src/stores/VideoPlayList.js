@@ -6,6 +6,16 @@ export const useVideoPlayList = defineStore("videoPlayList", () => {
   const currentPlayingIndex = ref(0);
   const arrOfvideos = ref([]);
 
+  const resetPlaying=()=>{
+    currentPlaying.value=0;
+    currentPlayingIndex.value=0;
+    arrOfvideos.value=arrOfvideos.value.map((video)=>{
+      video.isPlaying=false;
+      return video;
+    })
+  }
+
+
   const videoAddNewVideoFile = (VideooObj) => {
     arrOfvideos.value.push(VideooObj);
   };
@@ -52,5 +62,6 @@ export const useVideoPlayList = defineStore("videoPlayList", () => {
     videoAddNewVideoFile,
     setCurrentPlaying,
     currentPlaying,
+    resetPlaying,
   };
 });

@@ -14,6 +14,17 @@ const musicPlayListStore = useMusicPlayList();
 const videoPlayListStore = useVideoPlayList()
 const router = useRouter();
 
+watch(()=>tabStore.currentViewport,(newValue,oldValue)=>{
+  if(newValue='musicViewport'){
+    console.log("MUZIKA")
+    videoPlayListStore.resetPlaying()
+  }
+  if(newValue='videoViewport'){
+    console.log("VIDEO")
+    musicPlayListStore.resetPlaying()
+  }
+
+})
 
 const handleClickCardPlayBtn = async (index, viewport) => {
 
@@ -24,7 +35,6 @@ const handleClickCardPlayBtn = async (index, viewport) => {
   await nextTick(() => {
     if (viewport == 'musicViewport') {
       musicPlayListStore.setCurrentPlaying(index);
-      console.log("UPDATE m")
     }
     if(viewport == 'videoViewport'){
       videoPlayListStore.setCurrentPlaying(index)

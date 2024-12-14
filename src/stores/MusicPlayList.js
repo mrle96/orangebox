@@ -6,6 +6,14 @@ export const useMusicPlayList = defineStore("musicPlayList", () => {
   const currentPlayingIndex = ref(0);
   const arrOfSongs = ref([]);
 
+  const resetPlaying=()=>{
+    currentPlaying.value=0;
+    currentPlayingIndex.value=undefined;
+    arrOfSongs.value=arrOfSongs.value.map((song)=>{
+      song.isPlaying=false;
+      return song;
+    })
+  }
   const addNewAudioFile = (audioObj) => {
     arrOfSongs.value.push(audioObj);
   };
@@ -52,5 +60,6 @@ export const useMusicPlayList = defineStore("musicPlayList", () => {
     addNewAudioFile,
     setCurrentPlaying,
     currentPlaying,
+    resetPlaying,
   };
 });

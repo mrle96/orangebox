@@ -1,13 +1,13 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch,nextTick } from "vue";
 import Play from "../icons/Play.vue";
 import Pause from "../icons/Pause.vue";
 import Forward from "../icons/Forward.vue";
 import Backward from "../icons/Backward.vue";
 import Unmute from "../icons/Unmute.vue";
 import Mute from "../icons/Mute.vue";
-import { useMusicPlayList } from "@/stores/MusicPlayList";
-import { useVideoPlayList } from "@/stores/VideoPlayList";
+import { useVideoPlayList } from "@/stores/videoPlayList";
+
 const videoPlayListStore = useVideoPlayList();
 const videoTag = ref();
 const trackLengthDIV = ref();
@@ -22,9 +22,11 @@ const isVideoMuted = ref(false);
 watch(
   () => videoPlayListStore.currentPlaying,
   (newVideo) => {
-    videoTag.value.src = newVideo.path;
+    nextTick(()=>{
+      videoTag.value.src = newVideo.path;
     videoTag.value.play();
     isVideoPlaying.value = true;
+    })
   }
 );
 
@@ -113,7 +115,7 @@ const togglePause = () => {
       <!-- Dugmadi za navigaciju -->
       <div class="flex gap-1 ml-auto">
         <button
-          @click="musicPlayListStore.getPrevius"
+          @click="videoPlayListStore.getPrevius"
           class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500"
         >
           <Backward />
@@ -126,7 +128,7 @@ const togglePause = () => {
           <Play v-else />
         </button>
         <button
-          @click="musicPlayListStore.getNext"
+          @click="videoPlayListStore.getNext"
           class="p-2 border rounded-xl border-orange-500/30 bg-orange-400/40 hover:scale-105 transition-all active:bg-orange-500"
         >
           <Forward />

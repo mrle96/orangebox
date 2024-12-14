@@ -17,9 +17,8 @@ const tabStore = useTypeOfPlayList();
 <template>
   <MainLayout>
     <Navbar />
-    <!-- Dugme za promenu viewport-a -->
-    <button @click="tabStore.changeViewport('videoViewport')">{{ tabStore.currentViewport }} V</button>
-    <button @click="tabStore.changeViewport('musicViewport')">{{ tabStore.currentViewport }} M</button>
+
+
     <AppLayout>
       <SideBarLayout />  
         <!-- Prikazivanje sadržaja na osnovu trenutnog viewport-a -->   
